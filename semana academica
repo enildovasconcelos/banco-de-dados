@@ -1,0 +1,106 @@
+create database if not exists semanaacademica
+default character set utf8mb4
+default collate utf8mb4_general_ci;
+
+USE semanaacademica;
+
+create table if not exists tipos (
+	id int auto_increment,
+	nome varchar(50) not null,
+	primary key (id)
+);
+
+create table if not exists locais(
+	id int auto_increment,
+	nome varchar(85) not null,
+	descricao text,
+	endereco text,
+	latitude decimal (9,6),
+	longitude decimal(9,6),
+	tipo_id int,
+	primary key (id),
+	foreign key (tipo_id) references tipos (id)
+);
+
+create table if not exists eventos(
+	id int auto_increment,
+	nome varchar(85) not null,
+	descricao text,
+	data_incio date,
+	data_termino date,
+	locais_id int,
+	primary key (id),
+	foreign key (locais_id) references locais (id)
+);
+
+create table if not exists pessoas(
+	id int auto_increment,
+	nome varchar(85) not null,
+	descricao text,
+	primary key (id)
+);
+
+create table if not exists localpessoa (
+	id int auto_increment,
+	local_id int,        
+	pessoa_id int,       
+	funcao varchar(50),   
+	primary key (id),
+	foreign key (local_id) references locais(id),
+	foreign key (pessoa_id) references pessoas(id)
+);
+
+insert into tipos (nome)
+	values
+    ('lazer'),
+    ('turismo');
+
+
+-- (1 = lazer / 2 = turismo)
+insert into locais (nome, descricao, endereco, latitude, longitude, tipo_id)
+values (
+	'Parque Ambiental Encontro dos Rios',
+	'José Luis de Sousa é nascido em São Félix, zona rural de Teresina, em 1955. Nasceu menino de sítio e permanece até hoje.',
+	'R. Des. Flávio Furtado - Olarias, Teresina - PI, 64004-820',
+	'-5.035486',
+	'-42.838674',
+    1
+),
+(
+	'Ponte Estaiada',
+	'A Ponte Estaiada é um dos principais pontos turísticos de Teresina, com um mirante que oferece uma vista panorâmica da cidade.',
+	'Av. Raul Lopes - Noivos, Teresina - PI, 64046-010',
+	'-5.0719',
+	'-42.7913',
+    2
+),
+(
+	'Parque da Cidadania',
+	'O Parque da Cidadania é um espaço público de lazer e cultura em Teresina, com áreas verdes, palco para eventos, pista de caminhada e equipamentos de recreação.',
+	'Av. Miguel Rosa - Centro, Teresina - PI, 64000-520',
+	'-5.0942',
+	'-42.8078',
+    1
+);
+
+-- (3 = referente ao parque da cidadania)
+insert into eventos (nome, descricao, data_incio, data_termino, locais_id)
+values (
+	'Arraiá Solidária',
+    'Das 08:00 as 18:00, o evento vai garantir premiações, diversão e muito mais, com visão de arrecadar alimentos para necessitados na Páscoa',
+    '2025-05-01',
+    '2025-05-03',
+    3
+);
+
+-- (1 = local encontro dos rios)
+insert into pessoas (nome, descricao)
+values (
+	'José Luiz de Sousa',
+    'Escultor responsável por fazer a estatua do "Cabeça de Cuia", encontrado no "Encontro dos Rios"'
+    );
+    
+--  ligando encontro dos rios com o josé
+insert into localpessoa (local_id, pessoa_id, funcao)
+values 
+(1,1, 'escultor');
